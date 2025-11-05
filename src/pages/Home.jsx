@@ -1,9 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getCurrentUser } from '../lib/auth'
+import { getCurrentUser, removeUsersByNames } from '../lib/auth'
+import { useToast } from '../lib/toast.jsx'
 
 export default function Home() {
   const user = getCurrentUser()
+  const toast = useToast()
+
+  useEffect(()=>{
+    // Eliminar usuarios demo si existen
+    try{
+      const removed = removeUsersByNames(['ana','carlos'])
+      if(removed && removed.length){
+        toast.add(`Usuarios eliminados: ${removed.join(', ')}`)
+      }
+    }catch(e){
+      // no bloquear la UI si hay error
+      console.error('Error al eliminar usuarios demo', e)
+    }
+  }, [])
   return (
     <section>
       <div className="hero">
@@ -15,6 +30,7 @@ export default function Home() {
             {user && user.role === 'emprendedor' && (
               <Link className="btn secondary" to="/create" style={{marginLeft:8}}>Publicar</Link>
             )}
+            
           </div>
         </div>
         <div className="hero-media">

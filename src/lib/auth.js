@@ -52,3 +52,23 @@ export function logout(){
 export function listUsers(){
   return readUsers()
 }
+
+// Eliminar usuarios por nombre (dev helper). Devuelve array con nombres eliminados.
+export function removeUsersByNames(names){
+  if(!Array.isArray(names)) names = [names]
+  const users = readUsers()
+  const lower = names.map(n=>String(n).toLowerCase())
+  const kept = users.filter(u => !lower.includes(String(u.name).toLowerCase()))
+  const removed = users.filter(u => lower.includes(String(u.name).toLowerCase())).map(u=>u.name)
+  writeUsers(kept)
+  try{
+    const curRaw = localStorage.getItem(CURRENT_KEY)
+    if(curRaw){
+      const cur = JSON.parse(curRaw)
+      if(cur && lower.includes(String(cur.name).toLowerCase())){
+        localStorage.removeItem(CURRENT_KEY)
+      }
+    }
+  }catch(e){}
+  return removed
+}

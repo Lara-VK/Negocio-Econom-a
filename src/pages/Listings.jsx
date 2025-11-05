@@ -25,6 +25,27 @@ export default function Listings() {
     add('Producto eliminado')
   }
 
+  async function handleBuy(productId){
+    const user = getCurrentUser()
+    if(!user) return navigate('/login')
+    try{
+      const all = getProducts()
+      const prod = all.find(p=>p.id===productId)
+      const contact = prod?.contact || prod?.ownerContact || prod?.ownerName || 'No disponible'
+      const msg = `Contacto del vendedor: ${contact}\n\n¿Deseas registrar la compra para actualizar las estadísticas?`
+      if(window.confirm(msg)){
+        await import('../lib/api').then(m=>m.recordSale(productId))
+        setItems(getProducts())
+        add('Compra registrada. El emprendedor verá el cambio en sus estadísticas.')
+      } else {
+        // show contact so user can copy it
+        alert(`Contacto del vendedor:\n${contact}`)
+      }
+    }catch(err){
+      alert(err.message)
+    }
+  }
+
   return (
     <section>
       <h2>Anuncios</h2>
@@ -36,7 +57,7 @@ export default function Listings() {
       ) : (
         <div className="card-grid">
           {items.map(p => (
-            <ProductCard key={p.id} product={p} onDelete={handleDelete} />
+            <ProductCard key={p.id} product={p} onDelete={handleDelete} onBuy={handleBuy} />
           ))}
         </div>
       )}

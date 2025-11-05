@@ -7,6 +7,7 @@ import CreateProduct from './pages/CreateProduct'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import EditProduct from './pages/EditProduct'
+import Dashboard from './pages/Dashboard'
 import { getCurrentUser, logout } from './lib/auth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -56,7 +57,10 @@ function AppContent(){
             <Link to="/">Inicio</Link>
             <Link to="/listings">Anuncios</Link>
             { (getCurrentUser() && getCurrentUser().role === 'emprendedor') && (
-              <Link to="/create">Publicar</Link>
+              <>
+                <Link to="/create">Publicar</Link>
+                <Link to="/dashboard" style={{marginLeft:8}}>Dashboard</Link>
+              </>
             )}
             <Link to="/about">Sobre</Link>
             { /* auth links */ }
@@ -66,13 +70,14 @@ function AppContent(){
       </header>
       <main className="app-main">
         <div className="container">
-        <Routes>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
           <Route path="/create" element={<RequireAuth role="emprendedor"><CreateProduct/></RequireAuth>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/edit/:id" element={<RequireAuth role="emprendedor"><EditProduct/></RequireAuth>} />
+          <Route path="/dashboard" element={<RequireAuth role="emprendedor"><Dashboard/></RequireAuth>} />
           <Route path="/about" element={<About />} />
         </Routes>
         </div>
