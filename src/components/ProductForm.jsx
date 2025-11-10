@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useToast } from '../lib/toast.jsx'
 
 export default function ProductForm({ onSave, initial }) {
   const [title, setTitle] = useState(initial?.title || '')
@@ -11,7 +12,8 @@ export default function ProductForm({ onSave, initial }) {
 
   function handleSubmit(e) {
     e.preventDefault()
-    if (!title.trim()) return alert('El título es requerido')
+    const { add } = useToast()
+    if (!title.trim()){ add('El título es requerido'); return }
     const product = {
       title: title.trim(),
       price: price.trim(),

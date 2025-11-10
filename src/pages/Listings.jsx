@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { getCurrentUser } from '../lib/auth'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../lib/toast.jsx'
+import { useConfirm } from '../lib/confirm.jsx'
 
 export default function Listings() {
   const [items, setItems] = useState([])
@@ -13,13 +14,15 @@ export default function Listings() {
 
   const user = getCurrentUser()
   const { add } = useToast()
+  const confirm = useConfirm()
 
   useEffect(() => {
     setItems(getProducts())
   }, [])
 
-  function handleDelete(id){
-    if(!confirm('¿Eliminar este producto?')) return
+  async function handleDelete(id){
+    const ok = await confirm('¿Eliminar este producto?', { okText: 'Eliminar', cancelText: 'Cancelar' })
+    if(!ok) return
     deleteProduct(id)
     setItems(getProducts())
     add('Producto eliminado')
@@ -33,16 +36,21 @@ export default function Listings() {
       const prod = all.find(p=>p.id===productId)
       const contact = prod?.contact || prod?.ownerContact || prod?.ownerName || 'No disponible'
       const msg = `Contacto del vendedor: ${contact}\n\n¿Deseas registrar la compra para actualizar las estadísticas?`
-      if(window.confirm(msg)){
-        await import('../lib/api').then(m=>m.recordSale(productId))
+      const ok = await confirm(msg, { okText: 'Registrar', cancelText: 'Mostrar contacto' })
+      if(ok){
+        const api = await import('../lib/api')
+        await api.recordSale(productId)
+        const purchases = await import('../lib/purchases')
+        purchases.savePurchase({ productId, ownerId: prod.ownerId, title: prod.title, qty: 1, buyer: user.name, price: prod.price })
         setItems(getProducts())
-        add('Compra registrada. El emprendedor verá el cambio en sus estadísticas.')
+        add('Compra registrada. El emprendedor verá la demanda en su apartado.')
       } else {
-        // show contact so user can copy it
-        alert(`Contacto del vendedor:\n${contact}`)
+        // show contact via toast so user can copy it
+        add(`Contacto: ${contact}`)
       }
     }catch(err){
-      alert(err.message)
+      console.error(err)
+      add(err.message || 'Error al procesar la compra')
     }
   }
 

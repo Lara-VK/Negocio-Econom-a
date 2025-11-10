@@ -18,7 +18,7 @@ export default function CostsForm(){
 
   function handle(e){
     e.preventDefault()
-    if(!user) return alert('Debes iniciar sesión')
+    if(!user){ add('Debes iniciar sesión'); return }
     setCostsForOwner(user.id, { fixed: Number(fixed||0), variable: Number(variable||0) })
     add('Costos guardados')
   }

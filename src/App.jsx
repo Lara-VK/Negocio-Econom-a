@@ -8,17 +8,21 @@ import Register from './pages/Register'
 import Login from './pages/Login'
 import EditProduct from './pages/EditProduct'
 import Dashboard from './pages/Dashboard'
+import Demand from './pages/Demand'
 import { getCurrentUser, logout } from './lib/auth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ToastProvider, useToast } from './lib/toast.jsx'
+import { ConfirmProvider } from './lib/confirm.jsx'
 import Toasts from './components/Toasts'
 import RequireAuth from './components/RequireAuth'
 
 export default function App(){
   return (
     <ToastProvider>
-      <AppContent />
+      <ConfirmProvider>
+        <AppContent />
+      </ConfirmProvider>
       <Toasts />
     </ToastProvider>
   )
@@ -59,6 +63,7 @@ function AppContent(){
             { (getCurrentUser() && getCurrentUser().role === 'emprendedor') && (
               <>
                 <Link to="/create">Publicar</Link>
+                <Link to="/demand" style={{marginLeft:8}}>Demanda</Link>
                 <Link to="/dashboard" style={{marginLeft:8}}>Dashboard</Link>
               </>
             )}
@@ -73,6 +78,7 @@ function AppContent(){
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/listings" element={<Listings />} />
+          <Route path="/demand" element={<RequireAuth role="emprendedor"><Demand/></RequireAuth>} />
           <Route path="/create" element={<RequireAuth role="emprendedor"><CreateProduct/></RequireAuth>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

@@ -17,7 +17,7 @@ export default function EditProduct(){
     if(!found) return navigate('/listings')
     const user = getCurrentUser()
     if(!user || user.role!=='emprendedor' || user.id !== found.ownerId){
-      alert('No autorizado')
+      add('No autorizado')
       return navigate('/listings')
     }
     setInitial(found)
