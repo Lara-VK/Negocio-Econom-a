@@ -11,8 +11,8 @@ export default function CreateProduct() {
 
   function handleSave(product) {
     const user = getCurrentUser()
-    if(!user) return alert('Debes iniciar sesión como emprendedor para publicar')
-    if(user.role !== 'emprendedor') return alert('Solo los emprendedores pueden publicar productos')
+    if(!user){ add('Debes iniciar sesión como emprendedor para publicar'); return }
+    if(user.role !== 'emprendedor'){ add('Solo los emprendedores pueden publicar productos'); return }
     const created = saveProduct({ ...product, ownerId: user.id, ownerName: user.name, ownerContact: product.contact || '' })
     add('Producto publicado')
     // navigate to listings after save

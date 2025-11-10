@@ -17,7 +17,7 @@ export default function Login(){
       add(`${name} inició sesión`)
       navigate('/listings')
     }catch(err){
-      alert(err.message)
+      add(err.message)
     }
   }
 

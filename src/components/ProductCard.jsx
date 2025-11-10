@@ -11,14 +11,14 @@ export default function ProductCard({ product, onDelete, onBuy }) {
   return (
     <article className="card">
       <h3>{product.title}</h3>
-      {product.image && <img src={product.image} alt={product.title} style={{maxWidth:'100%',borderRadius:6}}/>}
+      {product.image && <img src={product.image} alt={product.title} style={{maxWidth:'100%',borderRadius:8}}/>}
       <p>{product.description}</p>
       <p style={{fontWeight:700}}>{product.price ? `₡ ${product.price}` : 'Precio a consultar'}</p>
 
       {canEdit && (
         <div style={{display:'flex',gap:8,marginTop:8}}>
           <Link to={`/edit/${product.id}`} className="btn secondary">Editar</Link>
-          <button className="btn" onClick={()=>onDelete && onDelete(product.id)} style={{background:'#ef4444'}}>Eliminar</button>
+          <button className="btn danger" onClick={()=>onDelete && onDelete(product.id)}>Eliminar</button>
         </div>
       )}
 

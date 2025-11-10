@@ -17,7 +17,7 @@ export default function Register(){
       add(`${name} registrado (${role})`)
       navigate('/listings')
     }catch(err){
-      alert(err.message)
+      add(err.message)
     }
   }
 
