@@ -10,13 +10,18 @@ export default function CreateProduct() {
   const { add } = useToast()
 
   function handleSave(product) {
-    const user = getCurrentUser()
-    if(!user){ add('Debes iniciar sesión como emprendedor para publicar'); return }
-    if(user.role !== 'emprendedor'){ add('Solo los emprendedores pueden publicar productos'); return }
-    const created = saveProduct({ ...product, ownerId: user.id, ownerName: user.name, ownerContact: product.contact || '' })
-    add('Producto publicado')
-    // navigate to listings after save
-    navigate('/listings')
+    try{
+      const user = getCurrentUser()
+      if(!user){ add('Debes iniciar sesión como emprendedor para publicar'); return }
+      if(user.role !== 'emprendedor'){ add('Solo los emprendedores pueden publicar productos'); return }
+      const created = saveProduct({ ...product, ownerId: user.id, ownerName: user.name, ownerContact: user.contact || '', ownerAvatar: user.avatar || '' })
+      add('Producto publicado')
+      // navigate to listings after save
+      navigate('/listings')
+    }catch(e){
+      console.error('Error al guardar producto', e)
+      add('Error al publicar: '+(e.message||e))
+    }
   }
 
   return (

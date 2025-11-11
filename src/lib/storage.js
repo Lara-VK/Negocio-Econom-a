@@ -12,6 +12,17 @@ export function getProducts() {
   return read()
 }
 
+// Eliminar productos por título (case-insensitive). Dev helper.
+export function removeProductsByTitle(titles){
+  if(!Array.isArray(titles)) titles = [titles]
+  const lower = titles.map(t=>String(t).toLowerCase())
+  const items = read()
+  const kept = items.filter(p => !lower.includes(String(p.title||'').toLowerCase()))
+  const removed = items.filter(p => lower.includes(String(p.title||'').toLowerCase())).map(p=>p.title)
+  write(kept)
+  return removed
+}
+
 export function saveProduct(product){
   const items = read()
   const withId = { id: Date.now().toString(), ...product }
