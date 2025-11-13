@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { fetchProducts, recordSale, analyticsForOwner } from '../lib/api'
 import { getCurrentUser } from '../lib/auth'
 import * as purchases from '../lib/purchases'
-import PurchaseForm from '../components/PurchaseForm'
 import { useToast } from '../lib/toast.jsx'
 import { Bar } from 'react-chartjs-2'
 import {
@@ -81,29 +80,27 @@ export default function Demand(){
         <p>No tienes productos publicados todavía.</p>
       ) }
 
-      <div style={{display:'grid',gridTemplateColumns:'1fr',gap:12}}>
-        {products.map(p=> (
-          <div key={p.id} className="card">
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-              <div>
-                <strong>{p.title}</strong>
-                <div style={{fontSize:13,color:'#666'}}>Precio: ₡{p.price} · Vendidos: {p.sales||0}</div>
+      <h3 style={{marginTop:28,marginBottom:16}}>Registros recientes de compras</h3>
+      { records.length === 0 && (
+        <div style={{padding:20,background:'linear-gradient(90deg,rgba(15,118,110,0.04),rgba(6,182,212,0.02))',borderRadius:10,textAlign:'center',color:'#6b7280'}}>No hay registros de compras aún.</div>
+      ) }
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(340px,1fr))',gap:12}}>
+        {records.map(r=> (
+          <div key={r.id} style={{background:'var(--surface)',padding:16,borderRadius:10,boxShadow:'0 6px 18px rgba(12,18,28,0.06)',borderLeft:'4px solid var(--primary)',display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
+            <div>
+              <h4 style={{margin:'0 0 8px 0',color:'var(--accent)'}}>{r.title}</h4>
+              <div style={{fontSize:14,color:'var(--muted)',lineHeight:1.6}}>
+                <div><strong>Cantidad:</strong> {r.qty} unidad(es)</div>
+                <div><strong>Comprador:</strong> {r.buyer}</div>
+                <div><strong>Precio total:</strong> ₡{(r.price * r.qty).toLocaleString('es-CR')}</div>
               </div>
             </div>
-            <PurchaseForm product={p} onSave={handleSave} />
+            <div style={{fontSize:12,color:'#9ca3af',marginTop:10,paddingTop:10,borderTop:'1px solid rgba(2,6,23,0.04)'}}>
+              {new Date(r.createdAt).toLocaleDateString('es-CR')} · {new Date(r.createdAt).toLocaleTimeString('es-CR')}
+            </div>
           </div>
         ))}
       </div>
-
-      <h3 style={{marginTop:20}}>Registros recientes</h3>
-      { records.length === 0 && <div>No hay registros de compras aún.</div> }
-      <ul>
-        {records.map(r=> (
-          <li key={r.id} style={{marginBottom:8}}>
-            <strong>{r.title}</strong> — {r.qty} unidad(es) • comprador: {r.buyer} • {new Date(r.createdAt).toLocaleString()}
-          </li>
-        ))}
-      </ul>
     </div>
   )
 }

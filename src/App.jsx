@@ -126,11 +126,11 @@ function AppContent(){
   return (
     <div className="app">
       <header className="app-header">
-        <div className="container" style={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+        <div className="container" style={{display:'flex',alignItems:'center',justifyContent:'space-between',gap:'3rem'}}>
           <div className="brand">
             <Logo size={48} />
-            <div style={{display:'flex',flexDirection:'column'}}>
-              <h1>Marketplace Estudiantil</h1>
+            <div style={{display:'flex',flexDirection:'column',marginLeft:'-15px'}}>
+              <h1>CampusTrade</h1>
               <small className="muted">Conecta. Vende. Crece.</small>
             </div>
           </div>
